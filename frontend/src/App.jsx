@@ -1,30 +1,18 @@
-import { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import toast from "react-hot-toast";
-import axios from "axios";
+import { HashRouter, Route, Routes } from "react-router";
+import Home from "./pages/Home";
+import Post from "./pages/Post";
 
 function App() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const posts = await axios.get("http://localhost:5001/api");
-        setPosts(posts.data);
-      } catch (error) {
-        toast.error("404 not found");
-      }
-    }
-    fetchPosts();
-  }, []);
-
   return (
-    <div>
-      {posts.map((post) => {
-        return <div key={post._id}>{post.title}</div>;
-      })}
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/post/" element={<Post />} />
+        <Route path="/post/:id" element={<Post />} />
+      </Routes>
       <Toaster />
-    </div>
+    </HashRouter>
   );
 }
 
