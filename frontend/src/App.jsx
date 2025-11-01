@@ -11,7 +11,7 @@ function App() {
         <Route path="/post/" element={<Post />} />
         <Route path="/post/:id" element={<Post />} />
       </Routes>
-      <Toaster />
+      <Toaster position="top-right" />
     </HashRouter>
   );
 }

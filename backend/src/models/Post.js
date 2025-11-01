@@ -6,9 +6,18 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    op: {
+      type: String,
+      required: true,
+    },
     content: {
       type: String,
       required: false,
+      default: "",
+    },
+    likes: {
+      type: [String],
+      default: [],
     },
   },
   { timestamps: true }

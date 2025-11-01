@@ -11,8 +11,8 @@ export async function getAllPosts(_, res) {
 
 export async function createPost(req, res) {
   try {
-    const { title } = req.body;
-    const newPost = new Post({ title });
+    const { title, op } = req.body;
+    const newPost = new Post({ title, op });
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
@@ -43,8 +43,8 @@ export async function deletePost(req, res) {
 
 export async function updatePost(req, res) {
   try {
-    const { title, content } = req.body;
-    const post = await Post.findByIdAndUpdate(req.params.postid, { title, content }, { new: true });
+    const { title, content, likes, op } = req.body;
+    const post = await Post.findByIdAndUpdate(req.params.postid, { title, content, likes, op }, { new: true });
     if (!post) {
       res.status(404).json({ message: "404 Post not found!" });
     }
