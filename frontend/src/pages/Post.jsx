@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../lib/axios";
 import toast from "react-hot-toast";
 
 function Post() {
@@ -12,7 +12,7 @@ function Post() {
     if (!id) navigate("/");
     async function fetchPost() {
       try {
-        const post = await axios.get("http://localhost:5001/api/" + id);
+        const post = await api.get("/" + id);
         setPost(post.data);
       } catch (error) {
         toast.error("404 post not found");

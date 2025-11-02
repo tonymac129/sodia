@@ -4,10 +4,12 @@ import rateLimit from "express-rate-limit";
 import router from "./routes/homeRoutes.js";
 import connectDB from "./config/db.js";
 import cors from "cors";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
+const __dirname = path.resolve();
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -16,9 +18,17 @@ const apiLimiter = rateLimit({
 });
 
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" }));
+if (process.env.NODE_ENV !== "production") {
+  app.use(cors({ origin: "http://localhost:5173" }));
+}
 app.use("/api", apiLimiter);
 app.use("/api", router);
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  });
+}
 
 connectDB().then(() => {
   app.listen(5001, () => {

@@ -19,6 +19,14 @@ const postSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    shares: {
+      type: Number,
+      default: 0,
+    },
+    saves: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );

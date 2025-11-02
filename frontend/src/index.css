@@ -4,6 +4,18 @@
   --primary-border: rgb(100, 100, 100);
   --primary-text: white;
   --secondary-text: rgb(200, 200, 200);
+  --modal-bg: rgba(20, 20, 20, 0.7);
+  --invert: 0;
+}
+
+.light {
+  --primary-bg: rgb(235, 235, 235);
+  --secondary-bg: rgb(215, 215, 215);
+  --primary-border: rgb(155, 155, 155);
+  --primary-text: black;
+  --secondary-text: rgb(55, 55, 55);
+  --modal-bg: rgba(235, 235, 235, 0.7);
+  --invert: 1;
 }
 
 * {
@@ -11,10 +23,20 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease;
 }
 
 body {
   background-color: var(--primary-bg);
+}
+
+.mode-btn {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 30px;
+  cursor: pointer;
+  filter: invert(var(--invert));
 }
 
 .wrap {
@@ -74,10 +96,29 @@ body {
   display: flex;
   gap: 50px;
   padding-block: 10px;
+  position: relative;
   padding-inline: 30px;
 }
 
 .post-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.post-btn img {
+  width: 30px;
+  filter: invert(var(--invert));
+}
+
+.post-btn:nth-child(1) img,
+.post-btn:nth-child(2) img {
+  filter: none;
+}
+
+.delete-btn {
+  position: absolute;
+  right: 30px;
   width: 30px;
 }
 
@@ -102,6 +143,55 @@ body {
   width: 100%;
 }
 
+.modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  backdrop-filter: blur(5px);
+  background-color: var(--modal-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: var(--primary-bg);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 30px;
+  width: 400px;
+  color: var(--secondary-text);
+  border: 2px solid var(--primary-border);
+}
+
+.modal-title {
+  font-size: 30px;
+  color: var(--primary-text);
+}
+
+.modal-description {
+  font-size: 18px;
+  text-align: center;
+  line-height: 28px;
+}
+
+.modal-close {
+  background-color: var(--secondary-bg);
+  border: none;
+  outline: none;
+  color: var(--primary-text);
+  font-size: 18px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -113,5 +203,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--secondary-text);
+  background-color: var(--secondary-text);
 }

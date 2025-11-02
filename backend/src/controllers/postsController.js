@@ -43,8 +43,8 @@ export async function deletePost(req, res) {
 
 export async function updatePost(req, res) {
   try {
-    const { title, content, likes, op } = req.body;
-    const post = await Post.findByIdAndUpdate(req.params.postid, { title, content, likes, op }, { new: true });
+    const { title, content, likes, op, shares, saves } = req.body;
+    const post = await Post.findByIdAndUpdate(req.params.postid, { title, content, likes, op, shares, saves }, { new: true });
     if (!post) {
       res.status(404).json({ message: "404 Post not found!" });
     }

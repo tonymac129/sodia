@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Post from "../components/Post";
 import toast from "react-hot-toast";
-import axios from "axios";
+import api from "../lib/axios.js";
 
 const success = {
   icon: "✅",
@@ -34,7 +34,7 @@ function Home() {
 
   async function fetchPosts() {
     try {
-      const posts = await axios.get("http://localhost:5001/api");
+      const posts = await api.get("/");
       setPosts(posts.data);
     } catch (error) {
       toast.error("404 not found");
@@ -45,7 +45,8 @@ function Home() {
     e.preventDefault();
     if (newPost.trim().length > 0) {
       try {
-        await axios.post("http://localhost:5001/api", { title: newPost, op: userID });
+        await api.post("/", { title: newPost, op: userID });
+        setPosts([]);
         fetchPosts();
         setNewPost("");
         toast("Post created successfully!", success);
@@ -62,7 +63,7 @@ function Home() {
       <div className="home-posts">
         {posts.length > 0 ? (
           posts.map((post) => {
-            return <Post userID={userID} postData={post} />;
+            return <Post key={post._id} userID={userID} postData={post} posts={posts} setPosts={setPosts} />;
           })
         ) : (
           <div className="message">Oof, the internet looks a bit empty without you. Create a new post below!</div>
