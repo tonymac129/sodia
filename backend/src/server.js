@@ -10,6 +10,7 @@ dotenv.config();
 
 const app = express();
 const __dirname = path.resolve();
+const PORT = process.env.PORT || 5001;
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -31,7 +32,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 connectDB().then(() => {
-  app.listen(5001, () => {
+  app.listen(PORT, () => {
     console.log("Port has started");
   });
 });
