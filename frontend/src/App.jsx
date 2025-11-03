@@ -1,36 +1,36 @@
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import Home from "./pages/Home";
-import Post from "./pages/Post";
+import PostPage from "./pages/PostPage";
+import Nav from "./components/Nav";
+import api from "./lib/axios";
 
 function App() {
-  const [mode, setMode] = useState(JSON.parse(localStorage.getItem("sodia-mode")) || false);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    if (!mode) {
-      document.body.classList.add("light");
-    } else {
-      document.body.classList.remove("light");
+    fetchPosts();
+  }, []);
+
+  async function fetchPosts() {
+    try {
+      const posts = await api.get("/");
+      setPosts(posts.data);
+    } catch (error) {
+      toast.error("404 not found" + error);
     }
-    localStorage.setItem("sodia-mode", mode);
-  }, [mode]);
+  }
 
   return (
     <BrowserRouter>
+      <Nav />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/post/" element={<Post />} />
-        <Route path="/post/:id" element={<Post />} />
+        <Route path="/" element={<Home posts={posts} setPosts={setPosts} fetchPosts={fetchPosts} />} />
+        <Route path="/post/" element={<PostPage posts={posts} setPosts={setPosts} fetchPosts={fetchPosts} />} />
+        <Route path="/post/:id" element={<PostPage posts={posts} setPosts={setPosts} fetchPosts={fetchPosts} />} />
       </Routes>
-      <motion.img
-        onClick={() => setMode(!mode)}
-        whileHover={{ scale: 1.1, y: -2 }}
-        src="/icons/ui/mode.svg"
-        className="mode-btn"
-        title="Toggle light mode"
-      />
       <Toaster position="top-right" />
     </BrowserRouter>
   );

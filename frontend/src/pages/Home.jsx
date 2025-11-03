@@ -19,27 +19,13 @@ const error = {
   icon: "⚠️",
 };
 
-function Home() {
-  const [posts, setPosts] = useState([]);
+function Home({ posts, fetchPosts, setPosts }) {
   const [newPost, setNewPost] = useState("");
   const [userID, setUserID] = useState(localStorage.getItem("sodia-id") || window.crypto.randomUUID());
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem("sodia-id", userID);
   }, [userID]);
-
-  async function fetchPosts() {
-    try {
-      const posts = await api.get("/");
-      setPosts(posts.data);
-    } catch (error) {
-      toast.error("404 not found");
-    }
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();

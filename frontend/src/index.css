@@ -30,11 +30,38 @@ body {
   background-color: var(--primary-bg);
 }
 
+.nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-inline: calc(50% - 300px);
+  padding-block: 15px;
+  border-bottom: 2px solid var(--primary-border);
+  gap: 15px;
+  color: var(--secondary-text);
+}
+
+.nav-logo {
+  color: var(--primary-text);
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.nav-search {
+  background-color: var(--secondary-bg);
+  border-radius: 5px;
+  font-size: 16px;
+  color: var(--primary-text);
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  flex: 1;
+}
+
 .mode-btn {
-  position: fixed;
-  top: 30px;
-  right: 30px;
-  width: 30px;
+  width: 25px;
   cursor: pointer;
   filter: invert(var(--invert));
 }
@@ -44,7 +71,7 @@ body {
   flex-direction: column;
   align-items: center;
   position: relative;
-  height: 100vh;
+  height: calc(100vh - 70px);
 }
 
 .message {
@@ -104,16 +131,60 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--secondary-text);
 }
 
 .post-btn img {
   width: 30px;
   filter: invert(var(--invert));
+  cursor: pointer;
 }
 
-.post-btn:nth-child(1) img,
-.post-btn:nth-child(2) img {
-  filter: none;
+.comment-btn {
+  font-size: 14px;
+  gap: 5px;
+}
+
+.comment-btn img {
+  width: 20px;
+}
+
+.no-inverse {
+  filter: none !important;
+}
+
+.post-label {
+  font-size: 18px;
+  color: var(--primary-text);
+  margin-block: 5px;
+  font-weight: bold;
+}
+
+.post-comments {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-comment {
+  background-color: var(--secondary-bg);
+  border-radius: 5px;
+  padding-top: 15px;
+  color: var(--primary-text);
+  font-size: 18px;
+}
+
+.comment-user,
+.comment-content {
+  padding-inline: 30px;
+  margin-bottom: 15px;
+}
+
+.comment-user {
+  margin-bottom: 5px;
+  color: var(--secondary-text);
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .delete-btn {

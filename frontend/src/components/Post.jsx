@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
@@ -15,11 +15,12 @@ const success = {
   },
 };
 
-function Post({ postData, userID, posts, setPosts }) {
+function Post({ postData, userID, posts, setPosts, page = false }) {
   const [post, setPost] = useState(postData);
-  const [liked, setLiked] = useState(post.likes.includes(userID));
-  const [saved, setSaved] = useState(post.saves.includes(userID));
+  const [liked, setLiked] = useState(post.likes?.includes(userID));
+  const [saved, setSaved] = useState(post.saves?.includes(userID));
   const [share, setShare] = useState(false);
+  const navigate = useNavigate();
 
   async function handleLike(e) {
     e.preventDefault();
@@ -94,9 +95,10 @@ function Post({ postData, userID, posts, setPosts }) {
       try {
         await api.delete("/" + postData._id);
         setPosts(posts.filter((post) => post._id !== postData._id));
+        if (page) navigate("/");
         toast("Post successfully deleted.", success);
       } catch (error) {
-        toast.error("Error: could not delete post");
+        toast.error("Error: could not delete post" + error);
       }
     }
   }
@@ -113,16 +115,22 @@ function Post({ postData, userID, posts, setPosts }) {
               onClick={(e) => handleLike(e)}
               src={liked ? "/icons/post/liked.svg" : "/icons/post/like.svg"}
               title={`${liked ? "Unlike" : "Like"} post`}
+              className="no-inverse"
             />
-            {post.likes.length}
+            {post.likes?.length}
+          </div>
+          <div className="post-btn">
+            <img src="/icons/post/comment.svg" title="View comments" />
+            {post.comments?.length}
           </div>
           <div className="post-btn">
             <img
               onClick={(e) => handleSave(e)}
               src={saved ? "/icons/post/saved.svg" : "/icons/post/save.svg"}
               title={`${saved ? "Unsave" : "Save"} post`}
+              className="no-inverse"
             />
-            {post.saves.length}
+            {post.saves?.length}
           </div>
           <div className="post-btn">
             <img onClick={(e) => handleShare(e)} src="/icons/post/share.svg" title="Share post" />
