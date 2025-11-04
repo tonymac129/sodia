@@ -1,9 +1,12 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import Modal from "./Modal";
 
-function Nav() {
+function Nav({ user, setUser }) {
   const [mode, setMode] = useState(JSON.parse(localStorage.getItem("sodia-mode")) || false);
+  const [login, setLogin] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!mode) {
@@ -27,7 +30,26 @@ function Nav() {
         className="mode-btn"
         title="Toggle light mode"
       />
-      <div>Profile btn</div>
+      {user.length > 0 ? (
+        <motion.img
+          onClick={() => navigate("/user")}
+          whileHover={{ scale: 1.1, y: -2 }}
+          className="nav-btn"
+          src="/icons/ui/user.svg"
+          title={`Logged in as ${user}`}
+        />
+      ) : (
+        <button className="nav-signup" onClick={() => setLogin(true)}>Sign up</button>
+      )}
+      {login && (
+        <Modal
+          setShown={setLogin}
+          title="Sign up/Log in"
+          description="Sign up for an account on Sodia to start posting and chatting!"
+          login={true}
+          setUser={setUser}
+        />
+      )}
     </div>
   );
 }

@@ -5,11 +5,11 @@ import toast from "react-hot-toast";
 import Post from "../components/Post";
 import Comment from "../components/Comment";
 
-function PostPage({ posts, setPosts, fetchPosts }) {
+function PostPage({ posts, setPosts, userID }) {
   const { id } = useParams();
   const [post, setPost] = useState({});
   const [newComment, setNewComment] = useState("");
-  const [userID, setUserID] = useState(localStorage.getItem("sodia-id") || window.crypto.randomUUID());
+  // const [userID, setUserID] = useState(localStorage.getItem("sodia-id") || window.crypto.randomUUID());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,15 +89,19 @@ function PostPage({ posts, setPosts, fetchPosts }) {
           )}
         </div>
       </div>
-      <form onSubmit={(e) => handleSubmit(e)} className="home-form">
-        <input
-          type="text"
-          value={newComment}
-          onInput={(e) => setNewComment(e.target.value)}
-          placeholder="Add a comment"
-          className="home-input"
-        />
-      </form>
+      {userID ? (
+        <form onSubmit={(e) => handleSubmit(e)} className="home-form">
+          <input
+            type="text"
+            value={newComment}
+            onInput={(e) => setNewComment(e.target.value)}
+            placeholder="Add a comment"
+            className="home-input"
+          />
+        </form>
+      ) : (
+        <div className="normal-message">Sign up to post and join the conversation!</div>
+      )}
     </div>
   );
 }

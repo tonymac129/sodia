@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import Modal from "./Modal";
@@ -21,6 +21,11 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
   const [saved, setSaved] = useState(post.saves?.includes(userID));
   const [share, setShare] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+     setLiked(post.likes?.includes(userID))
+     setSaved(post.saves?.includes(userID))
+  }, [userID]);
 
   async function handleLike(e) {
     e.preventDefault();
@@ -144,7 +149,13 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
           )}
         </div>
       </Link>
-      {share && <Modal setShown={setShare} />}
+      {share && (
+        <Modal
+          setShown={setShare}
+          title={"Link copied!"}
+          description={"Share this post's link with other people to enjoy the fun together!"}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Comment({ comment, userID, likeComment, deleteComment }) {
   const [liked, setLiked] = useState(comment.likes?.includes(userID));
+
+  useEffect(() => {
+    setLiked(comment.likes?.includes(userID));
+  }, [userID]);
 
   function handleLike() {
     let newComment;

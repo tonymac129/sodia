@@ -19,19 +19,19 @@ const error = {
   icon: "⚠️",
 };
 
-function Home({ posts, fetchPosts, setPosts }) {
+function Home({ posts, fetchPosts, setPosts, user }) {
   const [newPost, setNewPost] = useState("");
-  const [userID, setUserID] = useState(localStorage.getItem("sodia-id") || window.crypto.randomUUID());
+  // const [userID, setUserID] = useState(localStorage.getItem("sodia-id") || window.crypto.randomUUID());
 
-  useEffect(() => {
-    localStorage.setItem("sodia-id", userID);
-  }, [userID]);
+  // useEffect(() => {
+  //   localStorage.setItem("sodia-id", userID);
+  // }, [userID]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (newPost.trim().length > 0) {
       try {
-        await api.post("/", { title: newPost, op: userID });
+        await api.post("/", { title: newPost, op: user });
         setPosts([]);
         fetchPosts();
         setNewPost("");
@@ -49,21 +49,25 @@ function Home({ posts, fetchPosts, setPosts }) {
       <div className="home-posts">
         {posts.length > 0 ? (
           posts.map((post) => {
-            return <Post key={post._id} userID={userID} postData={post} posts={posts} setPosts={setPosts} />;
+            return <Post key={post._id} userID={user} postData={post} posts={posts} setPosts={setPosts} />;
           })
         ) : (
           <div className="message">Oof, the internet looks a bit empty without you. Create a new post below!</div>
         )}
       </div>
-      <form onSubmit={(e) => handleSubmit(e)} className="home-form">
-        <input
-          type="text"
-          value={newPost}
-          onInput={(e) => setNewPost(e.target.value)}
-          placeholder="Add a post"
-          className="home-input"
-        />
-      </form>
+      {user ? (
+        <form onSubmit={(e) => handleSubmit(e)} className="home-form">
+          <input
+            type="text"
+            value={newPost}
+            onInput={(e) => setNewPost(e.target.value)}
+            placeholder="Add a post"
+            className="home-input"
+          />
+        </form>
+      ) : (
+        <div className="normal-message">Sign up to post and join the conversation!</div>
+      )}
     </div>
   );
 }

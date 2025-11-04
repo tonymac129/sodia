@@ -60,10 +60,14 @@ body {
   flex: 1;
 }
 
-.mode-btn {
+.mode-btn,.nav-btn {
   width: 25px;
   cursor: pointer;
   filter: invert(var(--invert));
+}
+
+.nav-btn {
+  width: 35px;
 }
 
 .wrap {
@@ -74,7 +78,7 @@ body {
   height: calc(100vh - 70px);
 }
 
-.message {
+.message, .normal-message {
   font-size: 18px;
   color: var(--secondary-text);
   text-align: center;
@@ -82,6 +86,10 @@ body {
   width: 60%;
   line-height: 28px;
   margin-inline: auto;
+}
+
+.normal-message {
+  padding-top: 10px;
 }
 
 .home-posts {
@@ -214,6 +222,38 @@ body {
   width: 100%;
 }
 
+.user-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding-block: 50px;
+  padding-inline: calc(50% - 300px);
+}
+
+.user-info {
+  color: var(--secondary-text);
+  font-size: 18px;
+}
+
+.user-btn, .nav-signup {
+  background-color: var(--secondary-bg);
+  border-radius: 5px;
+  padding: 10px 15px;
+  color: var(--primary-text);
+  font-size: 18px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.nav-signup {
+  padding: 7px 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 .modal-bg {
   position: fixed;
   top: 0;
@@ -250,6 +290,23 @@ body {
   font-size: 18px;
   text-align: center;
   line-height: 28px;
+}
+
+.modal-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.modal-input {
+  background-color: var(--secondary-bg);
+  border: none;
+  outline: none;
+  font-size: 18px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  color: var(--primary-text);
 }
 
 .modal-close {
