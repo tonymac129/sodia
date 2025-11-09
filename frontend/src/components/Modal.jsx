@@ -1,24 +1,70 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
+import { pfps } from "../assets/assets";
 
-function Modal({ setShown, title, description, login = false, setUser = null }) {
+function Modal({
+  setShown,
+  ogtitle,
+  ogdescription,
+  login = false,
+  setUser = null,
+  profile = false,
+  selected = null,
+  setSelected = null,
+}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [title, setTitle] = useState(ogtitle);
+  const [description, setDiscription] = useState(ogdescription);
+  const [signup, setSignup] = useState(false);
+
+  useEffect(() => {
+    if (login) {
+      if (signup) {
+        setTitle("Sign up");
+        setDiscription("Sign up for an account on Sodia to start posting and chatting!");
+      } else {
+        setTitle("Log in");
+        setDiscription("Log in to your Sodia account to create posts, comment, like, and more!");
+      }
+    }
+  }, [signup]);
+
+  async function handleSignup() {
+    try {
+      const newAccount = await api.post("/user", { username: username, password: password, displayName: displayName });
+      if (newAccount.data.message === "Logged in") {
+        toast.success("Account created successfully!");
+        sessionStorage.setItem("sodia-logged", newAccount.data.username);
+        setUser(newAccount.data.username);
+        setShown(false);
+      } else {
+        toast.error("Please enter all credentials.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong, please try again.");
+    }
+  }
 
   async function handleLogin() {
     try {
-      const newLogin = await api.post("/user", { username: username, password: password });
+      const existingUser = await api.get("/user/" + username);
+      if (!existingUser) {
+        toast.error("Account doesn't exist!");
+        return;
+      }
+      const newLogin = await api.post("/user", { username: username, password: password, displayName: displayName });
       if (newLogin.data.message === "Logged in") {
         toast.success("Successfully logged in!");
+        sessionStorage.setItem("sodia-logged", newLogin.data.username);
         setUser(newLogin.data.username);
         setShown(false);
-      } else {
-        toast.error("Please input the correct password");
       }
     } catch (error) {
-      toast.error("Please input the correct password");
+      toast.error("Please input the correct credentials");
     }
   }
 
@@ -41,17 +87,55 @@ function Modal({ setShown, title, description, login = false, setUser = null }) 
               placeholder="Username"
               className="modal-input"
             />
+            {signup && (
+              <input
+                type="text"
+                value={displayName}
+                onInput={(e) => setDisplayName(e.target.value)}
+                placeholder="Display name"
+                className="modal-input"
+              />
+            )}
             <input
-              type="text"
+              type="password"
               value={password}
               onInput={(e) => setPassword(e.target.value)}
               placeholder="Password"
               className="modal-input"
             />
+            {signup ? (
+              <div>
+                Already have an account?{" "}
+                <span className="modal-link" onClick={() => setSignup(false)}>
+                  Log in
+                </span>
+              </div>
+            ) : (
+              <div>
+                Don't have an account yet?{" "}
+                <span className="modal-link" onClick={() => setSignup(true)}>
+                  Sign up
+                </span>
+              </div>
+            )}
           </div>
         )}
-        <button className="modal-close" onClick={() => (login ? handleLogin() : setShown(false))}>
-          {login ? "Login" : "Close"}
+        {profile && (
+          <div className="modal-pictures">
+            {pfps.pfps.map((pfp, index) => {
+              return (
+                <img
+                  key={index}
+                  src={pfp}
+                  className={`modal-picture ${selected === index ? "modal-selected" : ""}`}
+                  onClick={() => setSelected(index)}
+                />
+              );
+            })}
+          </div>
+        )}
+        <button className="modal-close" onClick={() => (login ? (signup ? handleSignup() : handleLogin()) : setShown(false))}>
+          {login ? title : "Close"}
         </button>
       </div>
     </motion.div>

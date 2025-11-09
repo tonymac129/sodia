@@ -10,7 +10,7 @@ import api from "./lib/axios";
 
 function App() {
   const [posts, setPosts] = useState([]);
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(sessionStorage.getItem("sodia-logged") || "");
 
   useEffect(() => {
     fetchPosts();

@@ -5,6 +5,7 @@
   --primary-text: white;
   --secondary-text: rgb(200, 200, 200);
   --modal-bg: rgba(20, 20, 20, 0.7);
+  --primary-color: rgb(0, 101, 216);
   --invert: 0;
 }
 
@@ -60,7 +61,8 @@ body {
   flex: 1;
 }
 
-.mode-btn,.nav-btn {
+.mode-btn,
+.nav-btn {
   width: 25px;
   cursor: pointer;
   filter: invert(var(--invert));
@@ -68,6 +70,8 @@ body {
 
 .nav-btn {
   width: 35px;
+  border-radius: 50%;
+  border: 1px solid var(--primary-border);
 }
 
 .wrap {
@@ -78,7 +82,8 @@ body {
   height: calc(100vh - 70px);
 }
 
-.message, .normal-message {
+.message,
+.normal-message {
   font-size: 18px;
   color: var(--secondary-text);
   text-align: center;
@@ -121,9 +126,38 @@ body {
   padding-inline: 30px;
 }
 
+.post-info,
+.comment-info {
+  padding-inline: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-info {
+  padding-inline: 0;
+}
+
+.post-user,
+.comment-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.post-user img,
+.comment-user img {
+  width: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--primary-border);
+}
+
+.comment-user img {
+  width: 25px;
+}
+
 .post-date {
   font-size: 13px;
-  padding-inline: 30px;
 }
 
 .post-btns {
@@ -231,12 +265,43 @@ body {
   padding-inline: calc(50% - 300px);
 }
 
+.user-pfp {
+  width: 180px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 5px solid var(--primary-border);
+}
+
+.user-name {
+  color: var(--primary-text);
+  font-size: 25px;
+  padding-bottom: 30px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.user-name img,
+.user-info img {
+  cursor: pointer;
+  width: 25px;
+  filter: invert(var(--invert));
+}
+
+.user-info img {
+  width: 20px;
+}
+
 .user-info {
   color: var(--secondary-text);
   font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.user-btn, .nav-signup {
+.user-btn,
+.nav-signup {
   background-color: var(--secondary-bg);
   border-radius: 5px;
   padding: 10px 15px;
@@ -246,6 +311,11 @@ body {
   outline: none;
   cursor: pointer;
   width: fit-content;
+}
+
+.warning-btn {
+  background-color: rgb(150, 30, 30);
+  color: white;
 }
 
 .nav-signup {
@@ -307,6 +377,35 @@ body {
   border-radius: 5px;
   padding: 10px 20px;
   color: var(--primary-text);
+}
+
+.modal-link {
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.modal-link:hover {
+  text-decoration: underline;
+}
+
+.modal-pictures {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.modal-picture {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid var(--primary-border);
+}
+
+.modal-selected {
+  border-color: var(--primary-color);
+  border-width: 5px;
 }
 
 .modal-close {

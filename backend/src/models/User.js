@@ -6,9 +6,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    displayName: {
+      type: String,
+      required: false,
+    },
     password: {
       type: String,
       required: true,
+    },
+    pfp: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

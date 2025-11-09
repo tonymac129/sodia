@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import Modal from "./Modal";
+import { pfps } from "../assets/assets";
 
 const success = {
   icon: "✅",
@@ -20,11 +21,24 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
   const [liked, setLiked] = useState(post.likes?.includes(userID));
   const [saved, setSaved] = useState(post.saves?.includes(userID));
   const [share, setShare] = useState(false);
+  const [userData, setUserData] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-     setLiked(post.likes?.includes(userID))
-     setSaved(post.saves?.includes(userID))
+    async function fetchUser() {
+      try {
+        const newUser = await api.get(`/user/${post.op}`);
+        setUserData(newUser.data);
+      } catch (error) {
+        toast.error("Error: " + error);
+      }
+    }
+    fetchUser();
+  }, [post]);
+
+  useEffect(() => {
+    setLiked(post.likes?.includes(userID));
+    setSaved(post.saves?.includes(userID));
   }, [userID]);
 
   async function handleLike(e) {
@@ -111,9 +125,14 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
   return (
     <div>
       <Link to={`/post/${post._id}`} key={post._id} className="post">
+        <div className="post-info">
+          <span className="post-user">
+            <img src={pfps.pfps[userData.pfp]} />@{post.op}
+          </span>
+          {" "}• <span className="post-date">{new Date(post.createdAt).toLocaleDateString()}</span>
+        </div>
         <h2 className="post-title">{post.title}</h2>
         {post.content && <p className="post-content">{post.content}</p>}
-        <div className="post-date">{new Date(post.createdAt).toLocaleDateString()}</div>
         <div className="post-btns">
           <div className="post-btn">
             <img
@@ -152,8 +171,8 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
       {share && (
         <Modal
           setShown={setShare}
-          title={"Link copied!"}
-          description={"Share this post's link with other people to enjoy the fun together!"}
+          ogtitle={"Link copied!"}
+          ogdescription={"Share this post's link with other people to enjoy the fun together!"}
         />
       )}
     </div>

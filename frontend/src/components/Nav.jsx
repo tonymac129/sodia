@@ -2,11 +2,27 @@ import { Link, useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
+import { pfps } from "../assets/assets";
+import toast from "react-hot-toast";
+import api from "../lib/axios";
 
 function Nav({ user, setUser }) {
   const [mode, setMode] = useState(JSON.parse(localStorage.getItem("sodia-mode")) || false);
   const [login, setLogin] = useState(false);
+  const [userData, setUserData] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const newUser = await api.get(`/user/${user}`);
+        setUserData(newUser.data);
+      } catch (error) {
+        toast.error("Error: " + error);
+      }
+    }
+    fetchUser();
+  }, [user]);
 
   useEffect(() => {
     if (!mode) {
@@ -35,17 +51,19 @@ function Nav({ user, setUser }) {
           onClick={() => navigate("/user")}
           whileHover={{ scale: 1.1, y: -2 }}
           className="nav-btn"
-          src="/icons/ui/user.svg"
+          src={pfps.pfps[userData.pfp]}
           title={`Logged in as ${user}`}
         />
       ) : (
-        <button className="nav-signup" onClick={() => setLogin(true)}>Sign up</button>
+        <button className="nav-signup" onClick={() => setLogin(true)}>
+          Log in
+        </button>
       )}
       {login && (
         <Modal
           setShown={setLogin}
-          title="Sign up/Log in"
-          description="Sign up for an account on Sodia to start posting and chatting!"
+          ogtitle="Log in"
+          ogdescription="Log in to your Sodia account to create posts, comment, like, and more!"
           login={true}
           setUser={setUser}
         />

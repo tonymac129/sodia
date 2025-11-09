@@ -1,7 +1,23 @@
 import { useState, useEffect } from "react";
+import api from "../lib/axios";
+import toast from "react-hot-toast";
+import { pfps } from "../assets/assets";
 
 function Comment({ comment, userID, likeComment, deleteComment }) {
   const [liked, setLiked] = useState(comment.likes?.includes(userID));
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const newUser = await api.get(`/user/${comment.user}`);
+        setUserData(newUser.data);
+      } catch (error) {
+        toast.error("Error: " + error);
+      }
+    }
+    fetchUser();
+  }, [comment]);
 
   useEffect(() => {
     setLiked(comment.likes?.includes(userID));
@@ -21,7 +37,11 @@ function Comment({ comment, userID, likeComment, deleteComment }) {
 
   return (
     <div className="post-comment">
-      <div className="comment-user">{comment.user}</div>
+      <div className="comment-info">
+        <span className="comment-user">
+          <img src={pfps.pfps[userData.pfp]} />@{comment.user}
+        </span>{" "}
+      </div>
       <div className="comment-content">{comment.comment}</div>
       <div className="post-btns">
         <div className="post-btn comment-btn">
