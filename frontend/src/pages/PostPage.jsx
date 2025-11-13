@@ -34,7 +34,7 @@ function PostPage({ posts, setPosts, userID }) {
     try {
       const response = await api.put(`/${post._id}`, {
         ...post,
-        comments: [{ comment: newComment, user: userID, likes: [] }, ...post.comments],
+        comments: [{ comment: newComment, time: new Date(), user: userID, likes: [] }, ...post.comments],
       });
       setPost(response.data);
       setNewComment("");
@@ -90,7 +90,7 @@ function PostPage({ posts, setPosts, userID }) {
         </div>
       </div>
       {userID ? (
-        <form onSubmit={(e) => handleSubmit(e)} className="home-form">
+        <form onSubmit={(e) => handleSubmit(e)} className="post-form">
           <input
             type="text"
             value={newComment}

@@ -1,7 +1,7 @@
 :root {
   --primary-bg: rgb(20, 20, 20);
   --secondary-bg: rgb(30, 30, 30);
-  --primary-border: rgb(100, 100, 100);
+  --primary-border: rgb(70, 70, 70);
   --primary-text: white;
   --secondary-text: rgb(200, 200, 200);
   --modal-bg: rgba(20, 20, 20, 0.7);
@@ -126,6 +126,10 @@ body {
   padding-inline: 30px;
 }
 
+.post-content {
+  padding-inline: 30px;
+}
+
 .post-info,
 .comment-info {
   padding-inline: 30px;
@@ -136,6 +140,7 @@ body {
 
 .comment-info {
   padding-inline: 0;
+  color: var(--secondary-text);
 }
 
 .post-user,
@@ -218,7 +223,7 @@ body {
 
 .comment-user,
 .comment-content {
-  padding-inline: 30px;
+  padding-left: 30px;
   margin-bottom: 15px;
 }
 
@@ -229,31 +234,62 @@ body {
   font-size: 14px;
 }
 
+.comment-date {
+  font-size: 14px;
+  color: var(--secondary-text);
+}
+
 .delete-btn {
   position: absolute;
   right: 30px;
   width: 30px;
 }
 
-.home-form {
+.home-form,
+.post-form {
   position: absolute;
   bottom: 20px;
-  width: 100%;
   width: 600px;
   margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--primary-bg);
+  padding-block: 10px;
+  padding-inline: 35px 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  border: 2px solid var(--primary-border);
+}
+
+.post-form {
+  border: none;
+  padding-inline: 10px;
 }
 
 .home-input {
-  padding: 10px 30px;
   border: none;
-  border-radius: 50px;
   font-size: 18px;
-  margin-right: 10px;
-  border: 2px solid var(--primary-border);
-  background-color: transparent;
   outline: none;
+  padding: 10px 15px;
+  border-radius: 5px;
   color: var(--primary-text);
   width: 100%;
+  background-color: var(--secondary-bg);
+}
+
+.home-caret {
+  width: 25px;
+  cursor: pointer;
+  position: absolute;
+  left: 5px;
+  bottom: 19px;
+  transition: transform 0.3s ease;
+}
+
+.caret-open {
+  transform: rotate(-90deg);
 }
 
 .user-page {
@@ -272,7 +308,8 @@ body {
   border: 5px solid var(--primary-border);
 }
 
-.user-name {
+.user-name,
+.user-bio {
   color: var(--primary-text);
   font-size: 25px;
   padding-bottom: 30px;
@@ -281,8 +318,13 @@ body {
   align-items: center;
 }
 
+.user-bio {
+  font-size: 18px;
+}
+
 .user-name img,
-.user-info img {
+.user-info img,
+.user-bio img {
   cursor: pointer;
   width: 25px;
   filter: invert(var(--invert));

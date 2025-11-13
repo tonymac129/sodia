@@ -46,8 +46,11 @@ export async function deleteUser(req, res) {
 export async function editUser(req, res) {
   try {
     const id = req.params.id;
-    const { displayName,pfp } = req.body;
-    const updatedUser = await User.findOneAndReplace({ username: id }, { ...req.body, displayName: displayName,pfp:pfp });
+    const { displayName, pfp, bio } = req.body;
+    const updatedUser = await User.findOneAndReplace(
+      { username: id },
+      { ...req.body, displayName: displayName, pfp: pfp, bio: bio }
+    );
     res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Error: " + error);

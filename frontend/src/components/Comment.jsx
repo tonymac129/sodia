@@ -8,6 +8,7 @@ function Comment({ comment, userID, likeComment, deleteComment }) {
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
+    setLiked(comment.likes?.includes(userID));
     async function fetchUser() {
       try {
         const newUser = await api.get(`/user/${comment.user}`);
@@ -40,7 +41,7 @@ function Comment({ comment, userID, likeComment, deleteComment }) {
       <div className="comment-info">
         <span className="comment-user">
           <img src={pfps.pfps[userData.pfp]} />@{comment.user}
-        </span>{" "}
+        </span>{" "}• <span className="comment-date" title={comment.time}>{new Date(comment.time).toLocaleDateString()}</span>
       </div>
       <div className="comment-content">{comment.comment}</div>
       <div className="post-btns">

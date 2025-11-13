@@ -11,8 +11,8 @@ export async function getAllPosts(_, res) {
 
 export async function createPost(req, res) {
   try {
-    const { title, op } = req.body;
-    const newPost = new Post({ title, op });
+    const { title, content, op } = req.body;
+    const newPost = new Post({ title, content, op });
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
@@ -44,7 +44,6 @@ export async function deletePost(req, res) {
 export async function updatePost(req, res) {
   try {
     const { title, content, likes, op, shares, saves, comments } = req.body;
-    console.log(comments);
     const post = await Post.findByIdAndUpdate(
       req.params.postid,
       { title, content, likes, op, shares, saves, comments },

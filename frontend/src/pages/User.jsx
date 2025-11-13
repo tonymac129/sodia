@@ -11,13 +11,14 @@ function User({ userID }) {
   const [selected, setSelected] = useState(0);
   const displayRef = useRef();
   const passwordRef = useRef();
+  const bioRef = useRef();
 
   useEffect(() => {
     async function fetchUser() {
       try {
         const user = await api.get(`/user/${userID}`);
         setUser(user.data);
-        setSelected(user.data.pfp)
+        setSelected(user.data.pfp);
       } catch (error) {
         toast.error("Error: " + error);
       }
@@ -45,7 +46,18 @@ function User({ userID }) {
   }
 
   function handleEdit(type) {
-    const element = type === "p" ? passwordRef.current : displayRef.current;
+    let element;
+    switch (type) {
+      case "p":
+        element = passwordRef.current;
+        break;
+      case "d":
+        element = displayRef.current;
+        break;
+      case "b":
+        element = bioRef.current;
+        break;
+    }
     element.contentEditable = true;
     element.focus();
     element.addEventListener("blur", async () => {
@@ -53,13 +65,15 @@ function User({ userID }) {
         let newUser;
         if (type === "d") {
           newUser = { ...user, displayName: element.innerText };
-        } else {
+        } else if (type === "p") {
           newUser = { ...user, password: element.innerText };
+        } else {
+          newUser = { ...user, bio: element.innerText };
         }
         await api.put(`/user/${userID}`, newUser);
         setUser(newUser);
         element.contentEditable = false;
-        toast.success(`${type === "p" ? "Password" : "Display name"} updated successfully`);
+        toast.success(`${type === "p" ? "Password" : type === "d" ? "Display name" : "Bio"} updated successfully`);
       } catch (error) {
         toast.error("Error: failed to edit display name");
       }
@@ -91,6 +105,10 @@ function User({ userID }) {
           <div ref={displayRef}>{user.displayName}</div>
           <img onClick={() => handleEdit("d")} src="/icons/ui/edit.svg" title="Edit display name" />
         </h2>
+        <div className="user-bio">
+          <div ref={bioRef}>{user.bio ? user.bio : "No bio added"}</div>
+          <img onClick={() => handleEdit("b")} src="/icons/ui/edit.svg" title="Edit bio" />
+        </div>
         <div className="user-info">Username: {user.username}</div>
         <div className="user-info">
           Password: <span ref={passwordRef}>{show ? user.password : hidePassword()}</span>

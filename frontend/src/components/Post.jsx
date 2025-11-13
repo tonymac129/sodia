@@ -129,7 +129,7 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
           <span className="post-user">
             <img src={pfps.pfps[userData.pfp]} />@{post.op}
           </span>
-          {" "}• <span className="post-date">{new Date(post.createdAt).toLocaleDateString()}</span>
+          {" "}• <span className="post-date" title={post.createdAt}>{new Date(post.createdAt).toLocaleDateString()}</span>
         </div>
         <h2 className="post-title">{post.title}</h2>
         {post.content && <p className="post-content">{post.content}</p>}
