@@ -35,7 +35,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  padding-inline: calc(50% - 300px);
+  padding-inline: calc(50% - 450px);
   padding-block: 15px;
   border-bottom: 2px solid var(--primary-border);
   gap: 15px;
@@ -105,8 +105,8 @@ body {
   overflow: auto;
   height: 90%;
   padding-block: 20px;
-  padding-left: calc(50% - 300px);
-  padding-right: calc(50% - 310px);
+  padding-left: calc(50% - 450px);
+  padding-right: calc(50% - 460px);
 }
 
 .post {
@@ -249,7 +249,7 @@ body {
 .post-form {
   position: absolute;
   bottom: 20px;
-  width: 600px;
+  width: 900px;
   margin-inline: auto;
   display: flex;
   flex-direction: column;
@@ -294,11 +294,34 @@ body {
 
 .user-page {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
+  padding-inline: calc(50% - 450px);
   padding-block: 50px;
-  padding-inline: calc(50% - 300px);
+  width: 100%;
+  justify-content: space-between;
+}
+
+.user-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.user-posts {
+  width: 60%;
+}
+
+.user-posts-title {
+  color: var(--primary-text);
+  padding-bottom: 30px;
+  font-size: 25px;
+}
+
+.saved-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow: auto;
+  height: calc(100vh - 250px);
 }
 
 .user-pfp {
@@ -312,10 +335,34 @@ body {
 .user-bio {
   color: var(--primary-text);
   font-size: 25px;
-  padding-bottom: 30px;
   display: flex;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
+}
+
+.follow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-block: 15px;
+}
+
+.follow-count {
+  color: var(--secondary-text);
+  font-size: 16px;
+}
+
+.follow-btn {
+  background-color: var(--primary-color);
+  border-radius: 5px;
+  color: var(--primary-text);
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  width: 100%;
+  padding-block: 10px;
+  border: none;
+  cursor: pointer;
 }
 
 .user-bio {

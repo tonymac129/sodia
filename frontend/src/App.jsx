@@ -32,7 +32,7 @@ function App() {
         <Route path="/" element={<Home user={user} posts={posts} setPosts={setPosts} fetchPosts={fetchPosts} />} />
         <Route path="/post/" element={<PostPage userID={user} posts={posts} setPosts={setPosts} />} />
         <Route path="/post/:id" element={<PostPage userID={user} posts={posts} setPosts={setPosts} />} />
-        <Route path="/user" element={<User userID={user} />} />
+        <Route path="/user" element={<User userID={user} posts={posts} setPosts={setPosts} />} />
       </Routes>
       <Toaster position="top-right" />
     </BrowserRouter>

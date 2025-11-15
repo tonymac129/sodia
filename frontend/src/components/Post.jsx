@@ -70,8 +70,10 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
     if (!saved) {
       try {
         const newPost = await api.put("/" + post._id, { ...post, saves: [...post.saves, userID] });
+        const newUser = await api.put("/user/" + userID, { ...userData, saved: [...userData.saved, post._id] });
         setSaved(true);
         setPost(newPost.data);
+        setUserData(newUser.data);
         toast("Post added to saved", success);
       } catch (error) {
         toast.error("Error: failed to save");
@@ -82,8 +84,13 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
           ...post,
           saves: post.saves.filter((user) => user !== userID),
         });
+        const newUser = await api.put("/user/" + userID, {
+          ...userData,
+          saved: userData.saved.filter((savedPost) => post._id !== savedPost),
+        });
         setSaved(false);
         setPost(newPost.data);
+        setUserData(newUser.data);
         toast("Post removed from saved", success);
       } catch (error) {
         toast.error("Error: failed to remove from saved");
@@ -128,8 +135,11 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
         <div className="post-info">
           <span className="post-user">
             <img src={pfps.pfps[userData.pfp]} />@{post.op}
+          </span>{" "}
+          •{" "}
+          <span className="post-date" title={post.createdAt}>
+            {new Date(post.createdAt).toLocaleDateString()}
           </span>
-          {" "}• <span className="post-date" title={post.createdAt}>{new Date(post.createdAt).toLocaleDateString()}</span>
         </div>
         <h2 className="post-title">{post.title}</h2>
         {post.content && <p className="post-content">{post.content}</p>}

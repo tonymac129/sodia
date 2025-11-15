@@ -3,12 +3,14 @@ import api from "../lib/axios";
 import { useState, useEffect, useRef } from "react";
 import Modal from "../components/Modal";
 import { pfps } from "../assets/assets";
+import Post from "../components/Post";
 
-function User({ userID }) {
+function User({ userID, posts, setPosts }) {
   const [user, setUser] = useState({});
   const [show, setShow] = useState(false);
   const [profile, setProfile] = useState(false);
   const [selected, setSelected] = useState(0);
+  const [savedPosts, setSavedPosts] = useState([]);
   const displayRef = useRef();
   const passwordRef = useRef();
   const bioRef = useRef();
@@ -27,10 +29,23 @@ function User({ userID }) {
   }, [userID]);
 
   useEffect(() => {
+    if (user.saved) {
+      async function getSavedPosts() {
+        try {
+          const userPosts = await Promise.all(user.saved?.map((post) => api.get("/" + post)));
+          setSavedPosts(userPosts);
+        } catch (error) {
+          toast.error("Error: " + error);
+        }
+      }
+      getSavedPosts();
+    }
+  }, [user.saved]);
+
+  useEffect(() => {
     async function updatePfp() {
       try {
         const updatedUser = await api.put(`/user/${userID}`, { ...user, pfp: selected });
-        console.log(updatedUser.data);
         setUser(updatedUser.data);
       } catch (error) {
         toast.error("Error: " + error);
@@ -100,38 +115,59 @@ function User({ userID }) {
     <div className="wrap">
       <title>{`${userID} | Sodia`}</title>
       <div className="user-page">
-        <img onClick={() => setProfile(true)} src={pfps.pfps[selected]} title="Edit profile picture" className="user-pfp" />
-        <h2 className="user-name">
-          <div ref={displayRef}>{user.displayName}</div>
-          <img onClick={() => handleEdit("d")} src="/icons/ui/edit.svg" title="Edit display name" />
-        </h2>
-        <div className="user-bio">
-          <div ref={bioRef}>{user.bio ? user.bio : "No bio added"}</div>
-          <img onClick={() => handleEdit("b")} src="/icons/ui/edit.svg" title="Edit bio" />
+        <div className="user-content">
+          <img onClick={() => setProfile(true)} src={pfps.pfps[selected]} title="Edit profile picture" className="user-pfp" />
+          <h2 className="user-name">
+            <div ref={displayRef}>{user.displayName}</div>
+            <img onClick={() => handleEdit("d")} src="/icons/ui/edit.svg" title="Edit display name" />
+          </h2>
+          <div className="follow">
+            <div className="follow-count">67 followers • 41 following</div>
+            <button className="follow-btn" title={`Follow ${userID}`}>
+              Follow coming soon
+            </button>
+          </div>
+          <div className="user-bio">
+            <div ref={bioRef}>{user.bio ? user.bio : "No bio added"}</div>
+            <img onClick={() => handleEdit("b")} src="/icons/ui/edit.svg" title="Edit bio" />
+          </div>
+          <div className="user-info">Username: {user.username}</div>
+          <div className="user-info">
+            Password: <span ref={passwordRef}>{show ? user.password : hidePassword()}</span>
+            <img
+              src={show ? "/icons/ui/hide.svg" : "/icons/ui/show.svg"}
+              title={`${show ? "Hide" : "Show"} password`}
+              onClick={() => setShow(!show)}
+            />
+            {show && <img onClick={() => handleEdit("p")} src="/icons/ui/edit.svg" title="Edit password" />}
+          </div>
+          <div className="user-info">Account created on: {new Date(user.createdAt).toLocaleDateString()}</div>
+          <button
+            className="user-btn"
+            onClick={() => {
+              sessionStorage.removeItem("sodia-logged");
+              window.location.href = "/";
+            }}
+          >
+            Log out
+          </button>
+          <button className="user-btn warning-btn" onClick={handleDelete}>
+            Delete account
+          </button>
         </div>
-        <div className="user-info">Username: {user.username}</div>
-        <div className="user-info">
-          Password: <span ref={passwordRef}>{show ? user.password : hidePassword()}</span>
-          <img
-            src={show ? "/icons/ui/hide.svg" : "/icons/ui/show.svg"}
-            title={`${show ? "Hide" : "Show"} password`}
-            onClick={() => setShow(!show)}
-          />
-          {show && <img onClick={() => handleEdit("p")} src="/icons/ui/edit.svg" title="Edit password" />}
+        <div className="user-posts">
+          <h2 className="user-posts-title">Your saved posts</h2>
+          <div className="saved-posts">
+            {savedPosts.length > 0 ? (
+              savedPosts.map((postData) => {
+                const post = postData.data;
+                return <Post key={post._id} userID={user.username} postData={post} posts={posts} setPosts={setPosts} />;
+              })
+            ) : (
+              <div className="message">You haven't saved any posts, explore the feed to discover new stuff!</div>
+            )}
+          </div>
         </div>
-        <div className="user-info">Account created on: {new Date(user.createdAt).toLocaleDateString()}</div>
-        <button
-          className="user-btn"
-          onClick={() => {
-            sessionStorage.removeItem("sodia-logged");
-            window.location.href = "/";
-          }}
-        >
-          Log out
-        </button>
-        <button className="user-btn warning-btn" onClick={handleDelete}>
-          Delete account
-        </button>
       </div>
       {profile && (
         <Modal

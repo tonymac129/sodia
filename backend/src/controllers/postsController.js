@@ -25,6 +25,7 @@ export async function getPost(req, res) {
     const post = await Post.findById(req.params.postid);
     res.status(200).json(post);
   } catch (error) {
+    res.json("Post deleted")
     console.log("Error:" + error);
   }
 }
