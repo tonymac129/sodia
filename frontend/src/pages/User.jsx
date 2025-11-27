@@ -4,29 +4,53 @@ import { useState, useEffect, useRef } from "react";
 import Modal from "../components/Modal";
 import { pfps } from "../assets/assets";
 import Post from "../components/Post";
+import { useParams, useNavigate } from "react-router";
 
 function User({ userID, posts, setPosts }) {
+  const { id } = useParams();
   const [user, setUser] = useState({});
   const [show, setShow] = useState(false);
   const [profile, setProfile] = useState(false);
   const [selected, setSelected] = useState(0);
   const [savedPosts, setSavedPosts] = useState([]);
+  const [viewer, setViewer] = useState(false);
+  const [following, setFollowing] = useState(false);
   const displayRef = useRef();
   const passwordRef = useRef();
   const bioRef = useRef();
+  const navigate = useNavigate();
+
+  if (id===userID) {
+    navigate("/user");
+  }
 
   useEffect(() => {
     async function fetchUser() {
       try {
-        const user = await api.get(`/user/${userID}`);
-        setUser(user.data);
+        let user;
+        if (id) {
+          user = await api.get(`/user/${id}`);
+          setUser(user.data);
+
+          const currentUser = await api.get(`/user/${userID}`);
+          console.log(currentUser.data.following);
+          if (currentUser.data.following?.includes(user.data.username)) {
+            setFollowing(true);
+          }
+          setViewer(true);
+        } else {
+          setViewer(false);
+          user = await api.get(`/user/${userID}`);
+          setUser(user.data);
+        }
         setSelected(user.data.pfp);
       } catch (error) {
+        navigate("/");
         toast.error("Error: " + error);
       }
     }
     fetchUser();
-  }, [userID]);
+  }, [userID, id]);
 
   useEffect(() => {
     if (user.saved) {
@@ -45,7 +69,7 @@ function User({ userID, posts, setPosts }) {
   useEffect(() => {
     async function updatePfp() {
       try {
-        const updatedUser = await api.put(`/user/${userID}`, { ...user, pfp: selected });
+        const updatedUser = await api.put(`/user/${user.username}`, { ...user, pfp: selected });
         setUser(updatedUser.data);
       } catch (error) {
         toast.error("Error: " + error);
@@ -95,11 +119,53 @@ function User({ userID, posts, setPosts }) {
     });
   }
 
+  async function handleFollow() {
+    if (following) {
+      try {
+        const currentUser = await api.get(`/user/${userID}`);
+        console.log(
+          currentUser.data.following.filter((follow) => follow === user.username),
+          currentUser.data.following,
+          user.username
+        );
+
+        const newUser = await api.put(`/user/${userID}`, {
+          ...currentUser.data,
+          following: currentUser.data.following.filter((follow) => follow !== user.username),
+        });
+
+        const newFollow = await api.put(`/user/${user.username}`, {
+          ...user,
+          followers: user.followers.filter((follow) => follow !== currentUser.data.username),
+        });
+        setUser(newFollow.data);
+        setFollowing(false);
+      } catch (error) {
+        toast.error(error);
+      }
+    } else {
+      try {
+        const currentUser = await api.get(`/user/${userID}`);
+        const newUser = await api.put(`/user/${userID}`, {
+          ...currentUser.data,
+          following: [...(currentUser.data.following || []), user.username],
+        });
+        const newFollow = await api.put(`/user/${user.username}`, {
+          ...user,
+          followers: [...(user.followers || []), currentUser.data.username],
+        });
+        setFollowing(true);
+        setUser(newFollow.data);
+      } catch (error) {
+        toast.error(error);
+      }
+    }
+  }
+
   async function handleDelete() {
     if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
       try {
         await api.delete("/user/" + userID);
-        console.log("safdklasdfkjsda");
         sessionStorage.removeItem("sodia-logged");
         toast.success("Account successfully deleted");
         setTimeout(() => {
@@ -116,52 +182,71 @@ function User({ userID, posts, setPosts }) {
       <title>{`${userID} | Sodia`}</title>
       <div className="user-page">
         <div className="user-content">
-          <img onClick={() => setProfile(true)} src={pfps.pfps[selected]} title="Edit profile picture" className="user-pfp" />
+          <img
+            onClick={() => {
+              if (!viewer) {
+                setProfile(true);
+              }
+            }}
+            src={pfps.pfps[selected]}
+            title="Edit profile picture"
+            className="user-pfp"
+          />
           <h2 className="user-name">
             <div ref={displayRef}>{user.displayName}</div>
-            <img onClick={() => handleEdit("d")} src="/icons/ui/edit.svg" title="Edit display name" />
+            {!viewer && <img onClick={() => handleEdit("d")} src="/icons/ui/edit.svg" title="Edit display name" />}
           </h2>
+          <div className="user-info">{user.username}</div>
           <div className="follow">
-            <div className="follow-count">67 followers • 41 following</div>
-            <button className="follow-btn" title={`Follow ${userID}`}>
-              Follow coming soon
-            </button>
+            <div className="follow-count">
+              {user.followers?.length} followers • {user.following?.length} following
+            </div>
+            {viewer && (
+              <button className="follow-btn" title={`Follow ${user.username}`} onClick={handleFollow}>
+                {following ? "Following" : "Follow"}
+              </button>
+            )}
           </div>
           <div className="user-bio">
             <div ref={bioRef}>{user.bio ? user.bio : "No bio added"}</div>
-            <img onClick={() => handleEdit("b")} src="/icons/ui/edit.svg" title="Edit bio" />
+            {!viewer && <img onClick={() => handleEdit("b")} src="/icons/ui/edit.svg" title="Edit bio" />}
           </div>
-          <div className="user-info">Username: {user.username}</div>
-          <div className="user-info">
-            Password: <span ref={passwordRef}>{show ? user.password : hidePassword()}</span>
-            <img
-              src={show ? "/icons/ui/hide.svg" : "/icons/ui/show.svg"}
-              title={`${show ? "Hide" : "Show"} password`}
-              onClick={() => setShow(!show)}
-            />
-            {show && <img onClick={() => handleEdit("p")} src="/icons/ui/edit.svg" title="Edit password" />}
-          </div>
-          <div className="user-info">Account created on: {new Date(user.createdAt).toLocaleDateString()}</div>
-          <button
-            className="user-btn"
-            onClick={() => {
-              sessionStorage.removeItem("sodia-logged");
-              window.location.href = "/";
-            }}
-          >
-            Log out
-          </button>
-          <button className="user-btn warning-btn" onClick={handleDelete}>
-            Delete account
-          </button>
+          {!viewer && (
+            <div className="user-info">
+              Password: <span ref={passwordRef}>{show ? user.password : hidePassword()}</span>
+              <img
+                src={show ? "/icons/ui/hide.svg" : "/icons/ui/show.svg"}
+                title={`${show ? "Hide" : "Show"} password`}
+                onClick={() => setShow(!show)}
+              />
+              {show && <img onClick={() => handleEdit("p")} src="/icons/ui/edit.svg" title="Edit password" />}
+            </div>
+          )}
+          <div className="user-info">Joined {new Date(user.createdAt).toLocaleDateString()}</div>
+          {!viewer && (
+            <>
+              <button
+                className="user-btn"
+                onClick={() => {
+                  sessionStorage.removeItem("sodia-logged");
+                  window.location.href = "/";
+                }}
+              >
+                Log out
+              </button>
+              <button className="user-btn warning-btn" onClick={handleDelete}>
+                Delete account
+              </button>
+            </>
+          )}
         </div>
         <div className="user-posts">
-          <h2 className="user-posts-title">Your saved posts</h2>
+          <h2 className="user-posts-title">{viewer ? user.displayName + "'s" : "Your"} saved posts</h2>
           <div className="saved-posts">
             {savedPosts.length > 0 ? (
               savedPosts.map((postData) => {
                 const post = postData.data;
-                return <Post key={post._id} userID={user.username} postData={post} posts={posts} setPosts={setPosts} />;
+                return <Post key={post._id} userID={userID} postData={post} posts={posts} setPosts={setPosts} />;
               })
             ) : (
               <div className="message">You haven't saved any posts, explore the feed to discover new stuff!</div>

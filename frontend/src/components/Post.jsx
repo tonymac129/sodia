@@ -71,10 +71,10 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
       try {
         const newPost = await api.put("/" + post._id, { ...post, saves: [...post.saves, userID] });
         const newUser = await api.put("/user/" + userID, { ...userData, saved: [...userData.saved, post._id] });
+        toast("Post added to saved", success);
         setSaved(true);
         setPost(newPost.data);
         setUserData(newUser.data);
-        toast("Post added to saved", success);
       } catch (error) {
         toast.error("Error: failed to save");
       }
@@ -133,9 +133,9 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
     <div>
       <Link to={`/post/${post._id}`} key={post._id} className="post">
         <div className="post-info">
-          <span className="post-user">
+          <Link to={`/user/${post.op}`} className="post-user">
             <img src={pfps.pfps[userData.pfp]} />@{post.op}
-          </span>{" "}
+          </Link>{" "}
           •{" "}
           <span className="post-date" title={post.createdAt}>
             {new Date(post.createdAt).toLocaleDateString()}

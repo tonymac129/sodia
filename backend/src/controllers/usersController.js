@@ -46,10 +46,10 @@ export async function deleteUser(req, res) {
 export async function editUser(req, res) {
   try {
     const id = req.params.id;
-    const { displayName, pfp, bio, saved } = req.body;
-    const updatedUser = await User.findOneAndReplace(
+    const { displayName, pfp, bio, saved,following,followers } = req.body;
+    const updatedUser = await User.findOneAndUpdate(
       { username: id },
-      { ...req.body, displayName: displayName, pfp: pfp, bio: bio, saved: saved },
+      {displayName: displayName, pfp: pfp, bio: bio, saved: saved,following:following,followers:followers },
       { new: true }
     );
     res.status(200).json(updatedUser);

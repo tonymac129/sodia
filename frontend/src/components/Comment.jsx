@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
+import { Link } from "react-router";
 import { pfps } from "../assets/assets";
 
 function Comment({ comment, userID, likeComment, deleteComment }) {
@@ -39,9 +40,13 @@ function Comment({ comment, userID, likeComment, deleteComment }) {
   return (
     <div className="post-comment">
       <div className="comment-info">
-        <span className="comment-user">
+        <Link to={`/user/${comment.user}`} className="comment-user">
           <img src={pfps.pfps[userData.pfp]} />@{comment.user}
-        </span>{" "}• <span className="comment-date" title={comment.time}>{new Date(comment.time).toLocaleDateString()}</span>
+        </Link>{" "}
+        •{" "}
+        <span className="comment-date" title={comment.time}>
+          {new Date(comment.time).toLocaleDateString()}
+        </span>
       </div>
       <div className="comment-content">{comment.comment}</div>
       <div className="post-btns">

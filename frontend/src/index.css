@@ -148,6 +148,12 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--secondary-text);
+  text-decoration: none;
+}
+
+.post-user:hover, .comment-user:hover {
+  text-decoration: underline;
 }
 
 .post-user img,
