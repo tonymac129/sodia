@@ -14,8 +14,8 @@ const __dirname = path.resolve();
 const PORT = process.env.PORT || 5001;
 
 const apiLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  limit: 100,
+  windowMs: 1000,
+  limit: 30,
   message: "Too many requests! Please wait and try again later.",
 });
 

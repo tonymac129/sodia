@@ -13,14 +13,16 @@ function User({ userID, posts, setPosts }) {
   const [profile, setProfile] = useState(false);
   const [selected, setSelected] = useState(0);
   const [savedPosts, setSavedPosts] = useState([]);
+  const [userPosts, setUserPosts] = useState([]);
   const [viewer, setViewer] = useState(false);
   const [following, setFollowing] = useState(false);
+  const [viewFollows, setViewFollows] = useState(false);
   const displayRef = useRef();
   const passwordRef = useRef();
   const bioRef = useRef();
   const navigate = useNavigate();
 
-  if (id===userID) {
+  if (id === userID) {
     navigate("/user");
   }
 
@@ -50,7 +52,9 @@ function User({ userID, posts, setPosts }) {
       }
     }
     fetchUser();
+    setViewFollows(false);
   }, [userID, id]);
+  //fix bug of viewing user data gets changed to the current users data
 
   useEffect(() => {
     if (user.saved) {
@@ -177,6 +181,10 @@ function User({ userID, posts, setPosts }) {
     }
   }
 
+  useEffect(() => {
+    setUserPosts(posts.filter((post) => post.op === user.username));
+  }, [user, posts]);
+
   return (
     <div className="wrap">
       <title>{`${userID} | Sodia`}</title>
@@ -199,7 +207,13 @@ function User({ userID, posts, setPosts }) {
           <div className="user-info">{user.username}</div>
           <div className="follow">
             <div className="follow-count">
-              {user.followers?.length} followers • {user.following?.length} following
+              <span className="user-count" onClick={() => setViewFollows(true)}>
+                {user.followers?.length} followers
+              </span>{" "}
+              •{" "}
+              <span className="user-count" onClick={() => setViewFollows(1)}>
+                {user.following?.length} following
+              </span>
             </div>
             {viewer && (
               <button className="follow-btn" title={`Follow ${user.username}`} onClick={handleFollow}>
@@ -240,17 +254,32 @@ function User({ userID, posts, setPosts }) {
             </>
           )}
         </div>
-        <div className="user-posts">
-          <h2 className="user-posts-title">{viewer ? user.displayName + "'s" : "Your"} saved posts</h2>
-          <div className="saved-posts">
-            {savedPosts.length > 0 ? (
-              savedPosts.map((postData) => {
-                const post = postData.data;
-                return <Post key={post._id} userID={userID} postData={post} posts={posts} setPosts={setPosts} />;
-              })
-            ) : (
-              <div className="message">You haven't saved any posts, explore the feed to discover new stuff!</div>
-            )}
+        <div className="user-posted">
+          <div className="user-posts">
+            <h2 className="user-posts-title">{viewer ? user.displayName + "'s" : "Your"} posts</h2>
+            <div className="saved-posts">
+              {userPosts.length > 0 ? (
+                userPosts.map((postData) => {
+                  const post = postData;
+                  return <Post userID={userID} postData={post} posts={posts} setPosts={setPosts} />;
+                })
+              ) : (
+                <div className="normal-message">You haven't posted anything yet, want to get started?</div>
+              )}
+            </div>
+          </div>
+          <div className="user-posts">
+            <h2 className="user-posts-title">{viewer ? user.displayName + "'s" : "Your"} saved posts</h2>
+            <div className="saved-posts">
+              {savedPosts.length > 0 ? (
+                savedPosts.map((postData) => {
+                  const post = postData.data;
+                  return <Post userID={userID} postData={post} posts={posts} setPosts={setPosts} />;
+                })
+              ) : (
+                <div className="normal-message">You haven't saved any posts, explore the feed to discover new stuff!</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -262,6 +291,14 @@ function User({ userID, posts, setPosts }) {
           profile={true}
           selected={selected}
           setSelected={setSelected}
+        />
+      )}
+      {viewFollows && (
+        <Modal
+          setShown={setViewFollows}
+          ogtitle={viewFollows === 1 ? `Followed by ${user.displayName}` : `${user.displayName}'s Followers`}
+          follows={viewFollows === 1 ? user.following : user.followers}
+          following={viewFollows === 1}
         />
       )}
     </div>

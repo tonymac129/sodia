@@ -27,7 +27,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Nav user={user} setUser={setUser} />
+      <Nav user={user} setUser={setUser} posts={posts} />
       <Routes>
         <Route path="/" element={<Home user={user} posts={posts} setPosts={setPosts} fetchPosts={fetchPosts} />} />
         <Route path="/post/" element={<PostPage userID={user} posts={posts} setPosts={setPosts} />} />

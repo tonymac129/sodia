@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { Link } from "react-router";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { pfps } from "../assets/assets";
@@ -7,12 +8,14 @@ import { pfps } from "../assets/assets";
 function Modal({
   setShown,
   ogtitle,
-  ogdescription,
+  ogdescription = "",
   login = false,
   setUser = null,
   profile = false,
   selected = null,
   setSelected = null,
+  follows = null,
+  following = false,
 }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +23,7 @@ function Modal({
   const [title, setTitle] = useState(ogtitle);
   const [description, setDiscription] = useState(ogdescription);
   const [signup, setSignup] = useState(false);
+  const [followUsers, setFollowUsers] = useState([]);
 
   useEffect(() => {
     if (login) {
@@ -32,6 +36,19 @@ function Modal({
       }
     }
   }, [signup]);
+
+  useEffect(() => {
+    async function fetchFollows() {
+      const allUsers = await Promise.all(
+        follows.map(async (follow) => {
+          const res = await api.get("/user/" + follow);
+          return { ...res.data };
+        })
+      );
+      setFollowUsers(allUsers);
+    }
+    if (follows) fetchFollows();
+  }, [follows]);
 
   async function handleSignup() {
     try {
@@ -130,6 +147,17 @@ function Modal({
                   className={`modal-picture ${selected === index ? "modal-selected" : ""}`}
                   onClick={() => setSelected(index)}
                 />
+              );
+            })}
+          </div>
+        )}
+        {follows && (
+          <div className="modal-follows">
+            {followUsers.map((follow) => {
+              return (
+                <Link to={`/user/${follow.username}`} className="modal-follow">
+                  <img src={pfps.pfps[follow.pfp]} /> {follow.username}
+                </Link>
               );
             })}
           </div>
