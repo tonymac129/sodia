@@ -1,9 +1,13 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { pfps } from "../assets/assets";
+import Login from "./Login";
+
+const clientId = "624001488812-vg7t5fiqj0prh7mfpheudqu83af5aagf.apps.googleusercontent.com";
 
 function Modal({
   setShown,
@@ -24,6 +28,22 @@ function Modal({
   const [description, setDiscription] = useState(ogdescription);
   const [signup, setSignup] = useState(false);
   const [followUsers, setFollowUsers] = useState([]);
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    async function checkGoogleOAuth() {
+      try {
+        const newLogin = await api.post("/login", { data: userData });
+        toast.success("Successfully logged in!");
+        sessionStorage.setItem("sodia-logged", newLogin.data.username);
+        setUser(newLogin.data.username);
+        setShown(false);
+      } catch (error) {
+        console.error("Error: " + error);
+      }
+    }
+    if (userData.email_verified) checkGoogleOAuth();
+  }, [userData]);
 
   useEffect(() => {
     if (login) {
@@ -92,80 +112,86 @@ function Modal({
         if (e.target === e.currentTarget) setShown(false);
       }}
     >
-      <div className="modal">
-        <h2 className="modal-title">{title}</h2>
-        <p className="modal-description">{description}</p>
-        {login && (
-          <div className="modal-inputs">
-            <input
-              type="text"
-              value={username}
-              onInput={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-              className="modal-input"
-            />
-            {signup && (
+      <GoogleOAuthProvider clientId={clientId}>
+        <div className="modal">
+          <h2 className="modal-title">{title}</h2>
+          <p className="modal-description">{description}</p>
+          {login && (
+            <div className="modal-inputs">
               <input
                 type="text"
-                value={displayName}
-                onInput={(e) => setDisplayName(e.target.value)}
-                placeholder="Display name"
+                value={username}
+                onInput={(e) => setUsername(e.target.value)}
+                placeholder="Username"
                 className="modal-input"
               />
-            )}
-            <input
-              type="password"
-              value={password}
-              onInput={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="modal-input"
-            />
-            {signup ? (
-              <div>
-                Already have an account?{" "}
-                <span className="modal-link" onClick={() => setSignup(false)}>
-                  Log in
-                </span>
-              </div>
-            ) : (
-              <div>
-                Don't have an account yet?{" "}
-                <span className="modal-link" onClick={() => setSignup(true)}>
-                  Sign up
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-        {profile && (
-          <div className="modal-pictures">
-            {pfps.pfps.map((pfp, index) => {
-              return (
-                <img
-                  key={index}
-                  src={pfp}
-                  className={`modal-picture ${selected === index ? "modal-selected" : ""}`}
-                  onClick={() => setSelected(index)}
+              {signup && (
+                <input
+                  type="text"
+                  value={displayName}
+                  onInput={(e) => setDisplayName(e.target.value)}
+                  placeholder="Display name"
+                  className="modal-input"
                 />
-              );
-            })}
-          </div>
-        )}
-        {follows && (
-          <div className="modal-follows">
-            {followUsers.map((follow) => {
-              return (
-                <Link to={`/user/${follow.username}`} className="modal-follow">
-                  <img src={pfps.pfps[follow.pfp]} /> {follow.username}
-                </Link>
-              );
-            })}
-          </div>
-        )}
-        <button className="modal-close" onClick={() => (login ? (signup ? handleSignup() : handleLogin()) : setShown(false))}>
-          {login ? title : "Close"}
-        </button>
-      </div>
+              )}
+              <input
+                type="password"
+                value={password}
+                onInput={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="modal-input"
+              />
+              <div className="modal-separate">
+                <span>or</span>
+              </div>
+              <Login setUserData={setUserData} />
+              {signup ? (
+                <div>
+                  Already have an account?{" "}
+                  <span className="modal-link" onClick={() => setSignup(false)}>
+                    Log in
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  Don't have an account yet?{" "}
+                  <span className="modal-link" onClick={() => setSignup(true)}>
+                    Sign up
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+          {profile && (
+            <div className="modal-pictures">
+              {pfps.pfps.map((pfp, index) => {
+                return (
+                  <img
+                    key={index}
+                    src={pfp}
+                    className={`modal-picture ${selected === index ? "modal-selected" : ""}`}
+                    onClick={() => setSelected(index)}
+                  />
+                );
+              })}
+            </div>
+          )}
+          {follows && (
+            <div className="modal-follows">
+              {followUsers.map((follow) => {
+                return (
+                  <Link to={`/user/${follow.username}`} className="modal-follow">
+                    <img src={pfps.pfps[follow.pfp]} /> {follow.username}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+          <button className="modal-close" onClick={() => (login ? (signup ? handleSignup() : handleLogin()) : setShown(false))}>
+            {login ? title : "Close"}
+          </button>
+        </div>
+      </GoogleOAuthProvider>
     </motion.div>
   );
 }

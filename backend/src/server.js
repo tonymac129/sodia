@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
+import appRouter from "./routes/appRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import connectDB from "./config/db.js";
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use("/api", apiLimiter);
+app.use("/api", appRouter);
 app.use("/api", postRouter);
 app.use("/api/user", userRouter);
 

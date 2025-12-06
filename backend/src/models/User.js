@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     pfp: {
       type: Number,
@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema(
     followers: {
       type: [String],
       default: [],
+    },
+    email: {
+      type: String,
+      required: false,
     },
   },
   { timestamps: true }

@@ -569,6 +569,38 @@ body {
   color: var(--primary-text);
 }
 
+.modal-separate {
+  height: 1px;
+  width: 100%;
+  background-color: var(--secondary-text);
+  position: relative;
+  margin-block: 10px;
+}
+
+.modal-separate span {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background-color: var(--primary-bg);
+  width: 50px;
+  text-align: center;
+}
+
+.login-btn {
+  background-color: var(--secondary-bg);
+  border-radius: 5px;
+  display: flex;
+  gap: 50px;
+  padding: 10px 15px;
+  cursor: pointer;
+  align-items: center;
+  font-size: 18px;
+}
+
+.login-btn img {
+  width: 30px;
+}
+
 .modal-link {
   color: var(--primary-color);
   cursor: pointer;
