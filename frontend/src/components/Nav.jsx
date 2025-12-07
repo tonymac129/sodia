@@ -96,7 +96,7 @@ function Nav({ user, setUser, posts }) {
           onClick={() => navigate("/user")}
           whileHover={{ scale: 1.1, y: -2 }}
           className="nav-btn"
-          src={pfps.pfps[userData.pfp]}
+          src={userData.pfp % 1 === 0 ? pfps.pfps[userData.pfp] : userData.pfp}
           title={`Logged in as ${user}`}
         />
       ) : (

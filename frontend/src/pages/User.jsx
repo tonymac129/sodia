@@ -196,7 +196,7 @@ function User({ userID, posts, setPosts }) {
                 setProfile(true);
               }
             }}
-            src={pfps.pfps[selected]}
+            src={selected % 1 === 0 ? pfps.pfps[selected] : selected}
             title="Edit profile picture"
             className="user-pfp"
           />
@@ -225,7 +225,7 @@ function User({ userID, posts, setPosts }) {
             <div ref={bioRef}>{user.bio ? user.bio : "No bio added"}</div>
             {!viewer && <img onClick={() => handleEdit("b")} src="/icons/ui/edit.svg" title="Edit bio" />}
           </div>
-          {!viewer && (
+          {!viewer&&user.password && (
             <div className="user-info">
               Password: <span ref={passwordRef}>{show ? user.password : hidePassword()}</span>
               <img

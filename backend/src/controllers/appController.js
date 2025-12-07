@@ -5,7 +5,7 @@ export async function login(req, res) {
     const { data } = req.body;
     let existingUser = await User.findOne({ email: data.email });
     if (!existingUser) {
-      const newUser = new User({ username: data.email, email: data.email, displayName: data.name });
+      const newUser = new User({ username: data.email, email: data.email, pfp: data.picture, displayName: data.name });
       await newUser.save();
       existingUser = newUser;
     }

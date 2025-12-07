@@ -41,7 +41,7 @@ function Comment({ comment, userID, likeComment, deleteComment }) {
     <div className="post-comment">
       <div className="comment-info">
         <Link to={`/user/${comment.user}`} className="comment-user">
-          <img src={pfps.pfps[userData.pfp]} />@{comment.user}
+          <img src={userData.pfp % 1 === 0 ? pfps.pfps[userData.pfp] : userData.pfp} />@{comment.user}
         </Link>{" "}
         •{" "}
         <span className="comment-date" title={comment.time}>

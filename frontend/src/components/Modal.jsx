@@ -34,6 +34,8 @@ function Modal({
     async function checkGoogleOAuth() {
       try {
         const newLogin = await api.post("/login", { data: userData });
+        console.log(userData);
+        
         toast.success("Successfully logged in!");
         sessionStorage.setItem("sodia-logged", newLogin.data.username);
         setUser(newLogin.data.username);

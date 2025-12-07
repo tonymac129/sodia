@@ -134,7 +134,7 @@ function Post({ postData, userID, posts, setPosts, page = false }) {
       <Link to={`/post/${post._id}`} key={post._id} className="post">
         <div className="post-info">
           <Link to={`/user/${post.op}`} className="post-user">
-            <img src={pfps.pfps[userData.pfp]} />@{post.op}
+            <img src={userData.pfp%1===0?pfps.pfps[userData.pfp]:userData.pfp} />@{post.op}
           </Link>{" "}
           •{" "}
           <span className="post-date" title={post.createdAt}>

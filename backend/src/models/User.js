@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     pfp: {
-      type: Number,
+      type: mongoose.Schema.Types.Mixed,
       default: 0,
     },
     bio: {
